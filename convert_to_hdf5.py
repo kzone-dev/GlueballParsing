@@ -98,14 +98,14 @@ if __name__ == "__main__":
     }
 
     Ensembles = ['M3', 'M4']
-    input_data_dir = '/users/nrebelobrito/sp4_mesonglueball_glueball_data/'
-    output_data_dir = '/users/nrebelobrito/Reparsing/output_files' 
+    input_data_dir = '/users/nrebelobrito/flavour_singlet_and_glueball_mixing_sp4/parsed_ferm_data'
+    output_data_dir = input_data_dir
 
     for ensemble, parameters in zip(Ensembles, [M3_parameters, M4_parameters]):
 
         A1mp_data = os.path.join(input_data_dir, f'{ensemble}_A1mp_result.out')
         A1pp_data = os.path.join(input_data_dir, f'{ensemble}_A1pp_result.out')
-        output_hdf5 = f'{ensemble}_results.h5'
+        output_hdf5 = f'{ensemble}_glueball_operators.hdf5'
 
         convert_to_hdf5(A1mp_data, output_hdf5, 'A1mp', parameters)
         convert_to_hdf5(A1pp_data, output_hdf5, 'A1pp', parameters)
