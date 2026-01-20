@@ -1,6 +1,14 @@
 import h5py
 import numpy as np
 import os
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Convert glueball operator data from txt to HDF5 format.')
+    parser.add_argument('--input_dir', type=str, required=True, help='Path to the input txt file.')
+    parser.add_argument('--output_dir', type=str, required=True, help='Path to the output HDF5 file.')
+    args = parser.parse_args()
+    return args.input_dir, args.output_dir
 
 def get_parameters(lines):
 
@@ -98,14 +106,12 @@ if __name__ == "__main__":
     }
 
     Ensembles = ['M3', 'M4']
-    input_data_dir = '/users/nrebelobrito/flavour_singlet_and_glueball_mixing_sp4/parsed_ferm_data'
-    output_data_dir = input_data_dir
-
+    input_data_dir, output_data_dir = parse_args()
     for ensemble, parameters in zip(Ensembles, [M3_parameters, M4_parameters]):
 
         A1mp_data = os.path.join(input_data_dir, f'{ensemble}_A1mp_result.out')
         A1pp_data = os.path.join(input_data_dir, f'{ensemble}_A1pp_result.out')
-        output_hdf5 = f'{ensemble}_glueball_operators.hdf5'
+        output_hdf5 = os.path.join(output_data_dir, f'{ensemble}_glueball_operators.hdf5')
 
         convert_to_hdf5(A1mp_data, output_hdf5, 'A1mp', parameters)
         convert_to_hdf5(A1pp_data, output_hdf5, 'A1pp', parameters)

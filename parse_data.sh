@@ -1,24 +1,25 @@
 #!/bin/bash
 
 # M3 ensemble
-M3_DATA_DIRS=$(ls -dv users/nrebelobrito/raw_glueball_data/M3/glueballs/run-*/out_0)
+M3_RAWLOGS_DIR=$1
+M4_RAWLOGS_DIR=$2
+OUTPUT_DIR=$3
 
-for dir in $DATA_DIRS
+M3_DATA_DIRS=$(ls -dv $M3_RAWLOGS_DIR/run-*/out_0)
+
+for dir in $M3_DATA_DIRS
 do
 	grep "A1pp" $dir >> M3_A1pp_result.out
 	grep "A1mp" $dir >> M3_A1mp_result.out
 done
 
 #M4 ensemble
-M4_DATA_DIRS=$(ls -dv users/nrebelobrito/raw_glueball_data/M4/glueballs/run-*/out_0)
+M4_DATA_DIRS=$(ls -dv $M4_RAWLOGS_DIR/run-*/out_0)
 
-for dir in $DATA_DIRS
+for dir in $M4_DATA_DIRS
 do
 	grep "A1pp" $dir >> M4_A1pp_result.out
 	grep "A1mp" $dir >> M4_A1mp_result.out
 done
 
-OUTPUT_DIR=users/nrebelobrito/flavour_singlet_and_glueball_mixing_sp4/data/parsed_glueball_data/
-
 mv *.out $OUTPUT_DIR 
-
