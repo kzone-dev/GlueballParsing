@@ -7,8 +7,9 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Convert glueball operator data from txt to HDF5 format.')
     parser.add_argument('--input_dir', type=str, required=True, help='Path to the input txt file.')
     parser.add_argument('--output_dir', type=str, required=True, help='Path to the output HDF5 file.')
+    parser.add_argument('--ensemble', type=str, required=True, help="Ensemble name")
     args = parser.parse_args()
-    return args.input_dir, args.output_dir
+    return args.input_dir, args.output_dir, args.ensemble
 
 def get_parameters(lines):
 
@@ -77,21 +78,22 @@ def convert_to_hdf5(input_file, output_file, dataset_key, parameters_dict=None):
 
 if __name__ == "__main__":
 
-    M3_parameters = {
-        'block_smear_steps': 5,
-        'alpha_APE': 0.4,
-        'alpha_D': 0.16,
-        'ensemble': 'M3',
-        'mfun': -1.01,
-        'mas': -0.71, #This changes!
-        'beta': 6.5,
-        'NT': 96,
-        'NX': 20,
-        'NY': 20,
-        'NZ': 20
-    }
-
-    M4_parameters = {
+    # TODO: transfer this to a yaml file later. 
+    parameters = {
+        "M3": {
+            'block_smear_steps': 5,
+            'alpha_APE': 0.4,
+            'alpha_D': 0.16,
+            'ensemble': 'M3',
+            'mfun': -1.01,
+            'mas': -0.71, #This changes!
+            'beta': 6.5,
+            'NT': 96,
+            'NX': 20,
+            'NY': 20,
+            'NZ': 20
+        },
+        "M4": {
         'block_smear_steps': 5,
         'alpha_APE': 0.4,
         'alpha_D': 0.16,
@@ -103,15 +105,15 @@ if __name__ == "__main__":
         'NX': 20,
         'NY': 20,
         'NZ': 20
+        }
     }
 
-    Ensembles = ['M3', 'M4']
-    input_data_dir, output_data_dir = parse_args()
-    for ensemble, parameters in zip(Ensembles, [M3_parameters, M4_parameters]):
+    input_data_dir, output_data_dir, ensemble = parse_args()
+    ensemble_parameters = parameters[ensemble]
 
-        A1mp_data = os.path.join(input_data_dir, f'{ensemble}_A1mp_result.out')
-        A1pp_data = os.path.join(input_data_dir, f'{ensemble}_A1pp_result.out')
-        output_hdf5 = os.path.join(output_data_dir, f'{ensemble}_glueball_operators.hdf5')
+    A1mp_data = os.path.join(input_data_dir, f'{ensemble}_A1mp_result.out')
+    A1pp_data = os.path.join(input_data_dir, f'{ensemble}_A1pp_result.out')
+    output_hdf5 = os.path.join(output_data_dir, f'{ensemble}_glueball_operators.hdf5')
 
-        convert_to_hdf5(A1mp_data, output_hdf5, 'A1mp', parameters)
-        convert_to_hdf5(A1pp_data, output_hdf5, 'A1pp', parameters)
+    convert_to_hdf5(A1mp_data, output_hdf5, 'A1mp', ensemble_parameters)
+    convert_to_hdf5(A1pp_data, output_hdf5, 'A1pp', ensemble_parameters)
