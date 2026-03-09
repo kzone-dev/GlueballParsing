@@ -3,6 +3,7 @@
 RAWLOGS_DIR=$1
 OUTPUT_DIR=$2
 ENSEMBLE_NAME=$3
+RPC_STR=$4
 
 DATA_DIRS=$(ls -dv $RAWLOGS_DIR/run-*/out_0)
 
@@ -12,8 +13,7 @@ echo "Ensemble name:" $3
 
 for dir in $DATA_DIRS
 do
-    grep "A1pp" $dir >> ${ENSEMBLE_NAME}_A1pp_result.out
-	grep "A1mp" $dir >> ${ENSEMBLE_NAME}_A1mp_result.out
+    grep "$RPC_STR" $dir >> ${ENSEMBLE_NAME}_${RPC_STR}_result.out
 done
 
-mv ${ENSEMBLE_NAME}_A1pp_result.out ${ENSEMBLE_NAME}_A1mp_result.out $OUTPUT_DIR
+mv ${ENSEMBLE_NAME}_${RPC_STR}_result.out $OUTPUT_DIR

@@ -8,8 +8,9 @@ def parse_args():
     parser.add_argument('--input_dir', type=str, required=True, help='Path to the input txt file.')
     parser.add_argument('--output_dir', type=str, required=True, help='Path to the output HDF5 file.')
     parser.add_argument('--ensemble', type=str, required=True, help="Ensemble name")
+    parser.add_argument('--rpc_str', type=str, required=True, help="String to identify the operator type in the txt files (e.g., 'A1pp' or 'A1mp').")
     args = parser.parse_args()
-    return args.input_dir, args.output_dir, args.ensemble
+    return args.input_dir, args.output_dir, args.ensemble, args.rpc_str
 
 def get_parameters(lines):
 
@@ -94,26 +95,24 @@ if __name__ == "__main__":
             'NZ': 20
         },
         "M4": {
-        'block_smear_steps': 5,
-        'alpha_APE': 0.4,
-        'alpha_D': 0.16,
-        'ensemble': 'M3',
-        'mfun': -1.01,
-        'mas': -0.70, #This changes!
-        'beta': 6.5,
-        'NT': 64,
-        'NX': 20,
-        'NY': 20,
-        'NZ': 20
+            'block_smear_steps': 5,
+            'alpha_APE': 0.4,
+            'alpha_D': 0.16,
+            'ensemble': 'M4',
+            'mfun': -1.01,
+            'mas': -0.70, #This changes!
+            'beta': 6.5,
+            'NT': 64,
+            'NX': 20,
+            'NY': 20,
+            'NZ': 20
         }
     }
 
-    input_data_dir, output_data_dir, ensemble = parse_args()
+    input_data_dir, output_data_dir, ensemble, rpc_str = parse_args()
     ensemble_parameters = parameters[ensemble]
 
-    A1mp_data = os.path.join(input_data_dir, f'{ensemble}_A1mp_result.out')
-    A1pp_data = os.path.join(input_data_dir, f'{ensemble}_A1pp_result.out')
-    output_hdf5 = os.path.join(output_data_dir, f'{ensemble}_glueball_operators.hdf5')
+    rpc_data = os.path.join(input_data_dir, f'{ensemble}_{rpc_str}_result.out')
+    output_hdf5 = os.path.join(output_data_dir, f'{ensemble}_{rpc_str}_glueball_operators.hdf5')
 
-    convert_to_hdf5(A1mp_data, output_hdf5, 'A1mp', ensemble_parameters)
-    convert_to_hdf5(A1pp_data, output_hdf5, 'A1pp', ensemble_parameters)
+    convert_to_hdf5(rpc_data, output_hdf5, rpc_str, ensemble_parameters)
