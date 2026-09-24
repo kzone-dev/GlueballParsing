@@ -14,6 +14,7 @@ echo "Glueball raw data path:" $1
 echo "Output dir:" $2
 echo "Ensemble name:" $3
 
+mkdir -p $OUTPUT_DIR
 grep "$RPC_STR" $RAWLOGS_PATH >> ${ENSEMBLE_NAME}_${RPC_STR}_result.out
 
 mv ${ENSEMBLE_NAME}_${RPC_STR}_result.out $OUTPUT_DIR
