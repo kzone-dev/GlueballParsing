@@ -47,8 +47,8 @@ def load_txt(input_file):
         lines = f.readlines()
 
         Nconfs, Nops, NT, header_conf = get_parameters(lines)
-        ops_data = np.empty((Nconfs, Nops, NT), dtype="f8")
-        vev_data = np.empty((Nconfs, Nops), dtype="f8")
+        ops_data = np.empty((Nconfs, Nops, NT), dtype="c16")
+        vev_data = np.empty((Nconfs, Nops), dtype="c16")
 
         print("Number of configurations:", Nconfs)
         print("Number of operators:", Nops)
@@ -63,7 +63,8 @@ def load_txt(input_file):
             iop = int(entries[1])
             it = int(entries[2])
             re_value = float(entries[3])
-            ops_data[iconf, iop, it] = re_value
+            im_value = float(entries[4])
+            ops_data[iconf, iop, it] = complex(re_value, im_value)
 
         for iop in range(Nops):
             # NOTE NOTE NOTE: No longer needed the division by NT later.
@@ -93,42 +94,11 @@ def convert_to_hdf5(input_file, output_file, dataset_key, parameters_dict=None):
 
 
 if __name__ == "__main__":
-    # TODO: transfer this to a yaml file later.
-    parameters = {
-        "M3": {
-            "block_smear_steps": 5,
-            "alpha_APE": 0.4,
-            "alpha_D": 0.16,
-            "ensemble": "M3",
-            "mfun": -1.01,
-            "mas": -0.71,  # This changes!
-            "beta": 6.5,
-            "NT": 96,
-            "NX": 20,
-            "NY": 20,
-            "NZ": 20,
-        },
-        "M4": {
-            "block_smear_steps": 5,
-            "alpha_APE": 0.4,
-            "alpha_D": 0.16,
-            "ensemble": "M4",
-            "mfun": -1.01,
-            "mas": -0.70,  # This changes!
-            "beta": 6.5,
-            "NT": 64,
-            "NX": 20,
-            "NY": 20,
-            "NZ": 20,
-        },
-    }
-
     input_data_dir, output_data_dir, ensemble, rpc_str = parse_args()
-    ensemble_parameters = parameters[ensemble]
 
     rpc_data = os.path.join(input_data_dir, f"{ensemble}_{rpc_str}_result.out")
     output_hdf5 = os.path.join(
         output_data_dir, f"{ensemble}_{rpc_str}_glueball_operators.hdf5"
     )
 
-    convert_to_hdf5(rpc_data, output_hdf5, rpc_str, ensemble_parameters)
+    convert_to_hdf5(rpc_data, output_hdf5, rpc_str)
