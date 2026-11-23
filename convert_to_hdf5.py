@@ -82,8 +82,9 @@ def convert_to_hdf5(input_file, output_file, dataset_key, parameters_dict=None):
         subdir.create_dataset(dataset_key + "_interp_ops", data=ops_data)
         subdir.create_dataset(dataset_key + "_vev", data=vev_data)
 
-        for key, value in parameters_dict.items():
-            subdir.create_dataset(key, data=value)
+        if parameters_dict not None:
+            for key, value in parameters_dict.items():
+                subdir.create_dataset(key, data=value)
 
         Nshapes = int(Nops / parameters_dict["block_smear_steps"])
         subdir.create_dataset("Nmeas", data=Nconfs)
