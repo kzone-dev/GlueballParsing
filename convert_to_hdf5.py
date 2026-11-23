@@ -70,12 +70,12 @@ def load_txt(input_file):
             # NOTE NOTE NOTE: No longer needed the division by NT later.
             vev_data[:, iop] = np.average(ops_data[:, iop, :], axis=1)
 
-    return ops_data, vev_data, Nconfs, Nops
+    return ops_data, vev_data, Nconfs, Nops, NT
 
 
 def convert_to_hdf5(input_file, output_file, dataset_key, parameters_dict=None):
 
-    ops_data, vev_data, Nconfs, Nops = load_txt(input_file)
+    ops_data, vev_data, Nconfs, Nops, NT = load_txt(input_file)
 
     with h5py.File(output_file, "a") as hf:
         subdir = hf.create_group(dataset_key)
@@ -86,10 +86,14 @@ def convert_to_hdf5(input_file, output_file, dataset_key, parameters_dict=None):
             for key, value in parameters_dict.items():
                 subdir.create_dataset(key, data=value)
 
-        Nshapes = int(Nops / parameters_dict["block_smear_steps"])
+
+            # Temporarily here
+            Nshapes = int(Nops / parameters_dict["block_smear_steps"])
+            subdir.create_dataset("Nshapes", data=Nshapes)
+
         subdir.create_dataset("Nmeas", data=Nconfs)
         subdir.create_dataset("Nops", data=Nops)
-        subdir.create_dataset("Nshapes", data=Nshapes)
+        subdir.create_dataset("NT", data=NT)
 
     print(f"Data successfully converted to {output_file}")
 
